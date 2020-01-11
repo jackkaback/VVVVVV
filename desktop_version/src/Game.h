@@ -104,26 +104,36 @@ public:
 
     void swnpenalty();
 
-    void deathsequence(mapclass& map, entityclass& obj, musicclass& music);
+	void deathsequence(mapclass &map, entityclass &obj, musicclass &music);
 
-    void customloadquick(std::string savfile, mapclass& map, entityclass& obj, musicclass& music);
-    void loadquick(mapclass& map, entityclass& obj, musicclass& music);
+	void customloadquick(std::string savfile, mapclass &map, entityclass &obj, musicclass &music);
 
-    void loadsummary(mapclass& map, UtilityClass& help);
+	void loadquick(mapclass &map, entityclass &obj, musicclass &music);
 
-    void initteleportermode(mapclass& map);
+	void loadsummary(mapclass &map, UtilityClass &help);
+
+	void initteleportermode(mapclass &map);
 
 	std::string saveFilePath;
 
+	enum loctionEnum {
+		SPACE_STATION_1,
+		LAB,
+		TOWER,
+		SPACE_STATION_2,
+		WARP,
+		FINAL
+	};
 
-    int door_left;
-    int door_right;
-    int door_up;
-    int door_down;
-    int roomx, roomy, roomchangedir;
-    int temp, j, k;
 
-    int savex, savey, saverx, savery;
+	int door_left;
+	int door_right;
+	int door_up;
+	int door_down;
+	int roomx, roomy, roomchangedir;
+	int temp, j, k;
+
+	int savex, savey, saverx, savery;
     int savegc, savedir;
 
     //Added for port

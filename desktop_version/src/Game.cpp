@@ -3712,7 +3712,9 @@ void Game::deletestats(mapclass &map, Graphics &dwgfx) {
 		unlock[i] = false;
 		unlocknotify[i] = false;
 	}
-	for (int i = 0; i < 6; i++) {
+
+	// These vectors should be the sames size
+	for (int i = 0; i < bestrank.size(); i++) {
 		besttimes[i] = -1;
 		besttrinkets[i] = -1;
 		bestlives[i] = -1;
@@ -4263,7 +4265,7 @@ void Game::starttrial(int t, entityclass &obj, musicclass &music) {
 	jumpheld = true;
 
 	switch (t) {
-		case 0: //Space Station 1
+		case SPACE_STATION_1:
 			savex = 200;
 			savey = 161;
 			saverx = 113;
@@ -4271,7 +4273,7 @@ void Game::starttrial(int t, entityclass &obj, musicclass &music) {
 			savegc = 0;
 			savedir = 1;
 			break;
-		case 1: //Lab
+		case LAB:
 			savex = 191;
 			savey = 33;
 			saverx = 102;
@@ -4279,14 +4281,14 @@ void Game::starttrial(int t, entityclass &obj, musicclass &music) {
 			savegc = 0;
 			savedir = 1;
 			break;
-		case 2: //Tower
+		case TOWER:
 			savex = 84;
 			savey = 193, saverx = 108;
 			savery = 109;
 			savegc = 0;
 			savedir = 1;
 			break;
-		case 3: //Space Station 2
+		case SPACE_STATION_2:
 			savex = 148;
 			savey = 38;
 			saverx = 112;
@@ -4294,7 +4296,7 @@ void Game::starttrial(int t, entityclass &obj, musicclass &music) {
 			savegc = 1;
 			savedir = 0;
 			break;
-		case 4: //Warp
+		case WARP:
 			savex = 52;
 			savey = 73;
 			saverx = 114;
@@ -4302,7 +4304,7 @@ void Game::starttrial(int t, entityclass &obj, musicclass &music) {
 			savegc = 0;
 			savedir = 1;
 			break;
-		case 5: //Final
+		case FINAL:
 			savex = 101;
 			savey = 113;
 			saverx = 46;
@@ -6287,12 +6289,9 @@ void Game::createmenu(std::string t) {
 		} else {
 			//Alright, we haven't unlocked any time trials. How about no death mode?
 			temp = 0;
-			if (bestrank[0] >= 2) temp++;
-			if (bestrank[1] >= 2) temp++;
-			if (bestrank[2] >= 2) temp++;
-			if (bestrank[3] >= 2) temp++;
-			if (bestrank[4] >= 2) temp++;
-			if (bestrank[5] >= 2) temp++;
+			for (int ii = 0; ii < bestrank.size(); ii++) {
+				if (bestrank[ii] >= 2) temp++;
+			}
 			if (temp >= 4 && !unlocknotify[17]) {
 				//Unlock No Death Mode
 				unlocknotify[17] = true;
@@ -6463,48 +6462,25 @@ void Game::createmenu(std::string t) {
 		menuxoff = -25;
 		menuyoff = 80;
 	} else if (t == "unlockmenutrials") {
-		if (unlock[9]) {
-			menuoptions[0] = "space station 1";
-			menuoptionsactive[0] = false;
-		} else {
-			menuoptions[0] = "space station 1";
-			menuoptionsactive[0] = true;
-		}
-		if (unlock[10]) {
-			menuoptions[1] = "the laboratory";
-			menuoptionsactive[1] = false;
-		} else {
-			menuoptions[1] = "the laboratory";
-			menuoptionsactive[1] = true;
-		}
-		if (unlock[11]) {
-			menuoptions[2] = "the tower";
-			menuoptionsactive[2] = false;
-		} else {
-			menuoptions[2] = "the tower";
-			menuoptionsactive[2] = true;
-		}
-		if (unlock[12]) {
-			menuoptions[3] = "space station 2";
-			menuoptionsactive[3] = false;
-		} else {
-			menuoptions[3] = "space station 2";
-			menuoptionsactive[3] = true;
-		}
-		if (unlock[13]) {
-			menuoptions[4] = "the warp zone";
-			menuoptionsactive[4] = false;
-		} else {
-			menuoptions[4] = "the warp zone";
-			menuoptionsactive[4] = true;
-		}
-		if (unlock[14]) {
-			menuoptions[5] = "the final level";
-			menuoptionsactive[5] = false;
-		} else {
-			menuoptions[5] = "the final level";
-			menuoptionsactive[5] = true;
-		}
+
+		menuoptions[0] = "space station 1";
+		menuoptionsactive[0] = !unlock[9];
+
+		menuoptions[1] = "the laboratory";
+		menuoptionsactive[1] = !unlock[10];
+
+		menuoptions[2] = "the tower";
+		menuoptionsactive[2] = !unlock[11];
+
+		menuoptions[3] = "space station 2";
+		menuoptionsactive[3] = !unlock[12];
+
+		menuoptions[4] = "the warp zone";
+		menuoptionsactive[4] = !unlock[13];
+
+		menuoptions[5] = "the final level";
+		menuoptionsactive[5] = !unlock[14];
+
 
 		menuoptions[6] = "return to unlock menu";
 		menuoptionsactive[6] = true;
@@ -6512,47 +6488,46 @@ void Game::createmenu(std::string t) {
 		menuxoff = -80;
 		menuyoff = 0;
 	} else if (t == "timetrials") {
+		menuoptionsactive[0] = unlock[9];
+		menuoptionsactive[1] = unlock[10];
+		menuoptionsactive[2] = unlock[11];
+		menuoptionsactive[3] = unlock[12];
+		menuoptionsactive[4] = unlock[13];
+		menuoptionsactive[5] = unlock[14];
+
 		if (!unlock[9]) {
 			menuoptions[0] = "???";
-			menuoptionsactive[0] = false;
 		} else {
 			menuoptions[0] = "space station 1";
-			menuoptionsactive[0] = true;
 		}
+
 		if (!unlock[10]) {
 			menuoptions[1] = "???";
-			menuoptionsactive[1] = false;
 		} else {
 			menuoptions[1] = "the laboratory";
-			menuoptionsactive[1] = true;
 		}
+
 		if (!unlock[11]) {
 			menuoptions[2] = "???";
-			menuoptionsactive[2] = false;
+
 		} else {
 			menuoptions[2] = "the tower";
-			menuoptionsactive[2] = true;
 		}
 		if (!unlock[12]) {
 			menuoptions[3] = "???";
-			menuoptionsactive[3] = false;
 		} else {
 			menuoptions[3] = "space station 2";
-			menuoptionsactive[3] = true;
 		}
+
 		if (!unlock[13]) {
 			menuoptions[4] = "???";
-			menuoptionsactive[4] = false;
 		} else {
 			menuoptions[4] = "the warp zone";
-			menuoptionsactive[4] = true;
 		}
 		if (!unlock[14]) {
 			menuoptions[5] = "???";
-			menuoptionsactive[5] = false;
 		} else {
 			menuoptions[5] = "the final level";
-			menuoptionsactive[5] = true;
 		}
 
 		menuoptions[6] = "return to play menu";
@@ -6660,7 +6635,7 @@ void Game::swnpenalty() {
 
 int Game::crewrescued() {
 	int crewRescued = 0;
-	for (int ii = 0; ii < 6; ii++) {
+	for (int ii = 0; ii < crewstats.size(); ii++) {
 		if (crewstats[ii]) {
 			crewRescued++;
 		}
